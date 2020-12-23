@@ -1,6 +1,7 @@
 import sqlite3
 import contextlib
 import json
+from ast import literal_eval
 
 # Execute a single statement
 def execute_statement(command: str, filter: tuple):
@@ -38,7 +39,8 @@ def get_oldest_timestamp(week: int):
                             WHERE week = (?)
                             ORDER BY timestamp DESC
                             LIMIT 1'''
-    filter = str(week)
+    # filter is a tupple
+    filter = (str(week),)
 
     # Sample output of db_cursor.fetchone()
     #| output | type        | week | timestamp  |
@@ -53,17 +55,17 @@ def get_oldest_timestamp(week: int):
 def get_output_type(type: str, week: int):
 
     timestamp = get_oldest_timestamp(week)
-    print(timestamp)
 
     command = '''   SELECT * FROM statistics
-                            WHERE type = (?) AND week = (?) '''
-    filter = (type, week)
-
+                            WHERE type = (?) AND week = (?) AND timestamp = (?) '''
+    filter = (type, week, timestamp)
+    
     output = fetch_one(command, filter)[0]
 
     # Verify we've been able to get an output which is not empty
+    # literal_eval converts a string with single quotes to dict
     if output is not None:
-        return (json.loads(output), timestamp)
+        return (literal_eval(output), timestamp)
     else:
         raise ValueError(   f"output is empty. Check we have an output for :\n"
                             f"   - week = {week},\n"

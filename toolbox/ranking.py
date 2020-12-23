@@ -56,13 +56,37 @@ def cure_teams(output: list) -> list:
         line['prenom'] = capitalize_name(line['prenom'])
         line['nom_de_famille'] = capitalize_name(line['nom_de_famille'])
 
+        # str to int
+        line['total_activites_solo'] = int(line['total_activites_solo'])
+
         team_name = line['code']
         line.pop('code')
         result[team_name].append(line)
     
     return result
 
-def get_week_result(ranking_current_total: dict, week_number: int) -> dict:
 
-    ranking_old_total = db.get_output_type('total', week_number - 1)
+# Get a dict which shows the progress of each participant for the current week
+# It's the diff between the current_week_total and old_week_total
+# old_week_number is the week number used for the comparison with the current_week
+def get_week_result(ranking_current_total: dict, old_week_number: int) -> dict:
+
+    # Get the previous week from DB
+    ranking_old_total, timestamp_old = db.get_output_type('total', old_week_number)
+
+    # Init the ranking_current_week with the same key, structure
+    ranking_current_week = ranking_current_total
+
+    for team, courreurs in ranking_current_total.items():
     
+        for index, courreur_results in enumerate(courreurs):
+
+            # If the key is a number, then substract current_week and old_week values. 
+            # If value is a float, keep only two decimals
+            # Else it's a string (name, surname), add it as is.
+            ranking_current_week[team][index] = {key:   (courreur_results[key] - ranking_old_total[team][index].get(key, 0) if isinstance(courreur_results[key], int)
+                                                        else round(courreur_results[key] - ranking_old_total[team][index].get(key, 0), 2) if isinstance(courreur_results[key], float)
+                                                        else courreur_results[key])
+                                                        for key in courreur_results}
+
+    return ranking_current_week
