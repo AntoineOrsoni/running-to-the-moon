@@ -73,8 +73,8 @@ def cure_teams(output: list) -> list:
 def get_week_result(ranking_current_total: dict, old_week_number: int) -> dict:
 
     # Get the previous week from DB
-    # modulo 53 allows to compare week 1 and week 52 as the previous week
-    ranking_old_total, timestamp_old = db.get_output_type('total', old_week_number % 53)
+    # modulo 54 allows to compare week 1 and week 52 as the previous week
+    ranking_old_total, timestamp_old = db.get_output_type('total', old_week_number % 54)
 
     # Init the ranking_current_week with the same key, structure
     ranking_current_week = ranking_current_total
