@@ -1,0 +1,5 @@
+.vscode
+venv
+test*
+credentials.yaml
+sqlite/statistics.db

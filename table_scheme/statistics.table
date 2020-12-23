@@ -1,0 +1,6 @@
+| output  | type        | week | timestamp  |
+| ------ | ----------- | ---- | ---------- |
+| {json} | total       | 1    | dd:mm:yyyy |
+| {json} | week_result | 1    | dd:mm:yyyy |
+| {json} | total       | 2    | dd:mm:yyyy |
+| {json} | week_result | 2    | dd:mm:yyyy |
