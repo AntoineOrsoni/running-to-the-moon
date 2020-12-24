@@ -27,13 +27,14 @@ db.add_output(json.dumps(ranking_current_total), 'total', current_week, current_
 
 ## Get the week results
 ranking_current_week, old_time = rank.get_week_result(ranking_current_total, current_week - 1)
-pr.all_results(ranking_current_week)
+#pr.all_results(ranking_current_week)
+
 db.add_output(json.dumps(ranking_current_week), 'week_result', current_week, current_time)
 
 # Print the results
-# rank.get_best_average_distance_team(ranking_current_week, current_time, old_time)
-# rank.get_total_distance_team(ranking_current_week, current_time, old_time)
-# rank.get_best_runner_team(ranking_current_week, current_time, old_time)
-# rank.get_best_duo_height_team(ranking_current_week, current_time, old_time)
-# rank.get_best_duo_distance_team(ranking_current_week, current_time, old_time)
-# rank.get_best_average_activities_team(ranking_current_week, current_time, old_time)
+rank.get_best_average_distance_team(ranking_current_week, current_time, old_time)
+rank.get_total_distance_team(ranking_current_week, current_time, old_time)
+rank.get_best_runner_team(ranking_current_week, current_time, old_time)
+rank.get_best_duo_height_team(ranking_current_week, current_time, old_time)
+rank.get_best_duo_distance_team(ranking_current_week, current_time, old_time)
+rank.get_best_average_activities_team(ranking_current_week, current_time, old_time)

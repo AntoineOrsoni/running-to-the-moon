@@ -79,32 +79,33 @@ def get_week_result(ranking_current_total: dict, old_week_number: int) -> dict:
     # Get the previous week from DB
     # modulo 54 allows to compare week 1 and week 52 as the previous week
     ranking_old_total, timestamp_old = db.get_output_type('total', old_week_number % 54)
-    pr.all_results(ranking_old_total)
 
     ranking_current_week = copy.deepcopy(ranking_current_total)
 
-    for team, courreurs in ranking_current_week.items():
+    for team, runners in ranking_current_week.items():
     
-        for index, courreur_results in enumerate(courreurs):
+        for index, runner_results in enumerate(runners):
+        
+            old_index = 0
 
-            # If the key is a number, then substract current_week and old_week values. 
-            # If value is a float, keep only two decimals
-            # Else it's a string (name, surname), add it as is.
-            try:
-                ranking_current_week[team][index] = {key:   (courreur_results[key] - ranking_old_total[team][index].get(key, 0) 
-                                                                if isinstance(courreur_results[key], int)
-                                                            else round(courreur_results[key] - ranking_old_total[team][index].get(key, 0), 2) 
-                                                                if isinstance(courreur_results[key], float)
-                                                            else courreur_results[key])
-                                                            for key in courreur_results}
+            # Find in the current_week the old_index of the name + surname (key 0, key 1) in the old_week. 
+            # Save the old_index
+            for i, old_runner_results in enumerate(ranking_old_total[team]):
+                if all([x in old_runner_results.values() for x in list(runner_results.values())[:2]]):
+                    old_index = i
+                    break # Break once we find a match in the list, other runners won't match
+                # the runner is new. Wasn't here in the old_week
+                else: 
+                    old_index = None
 
-            # The key doesn't exist in the previous week. No need to substract, we can leave it as is.
-            except KeyError:
-                pass
-            except IndexError:
-                pass
-    
-
+            ranking_current_week[team][index] = {key:   (runner_results[key]
+                                                            if old_index == None # New runner. Don't substract, total_value = week_value
+                                                        else runner_results[key] - ranking_old_total[team][old_index].get(key, 0) 
+                                                            if isinstance(runner_results[key], int) # Substract
+                                                        else round(runner_results[key] - ranking_old_total[team][old_index].get(key, 0), 2)
+                                                            if isinstance(runner_results[key], float) # Substract and round with 2 decimals
+                                                        else runner_results[key]) # It's a `str` key such as `name`. Don't substract
+                                                        for key in runner_results}
 
     return (ranking_current_week, timestamp_old)
 
