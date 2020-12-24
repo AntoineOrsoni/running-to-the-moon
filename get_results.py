@@ -1,11 +1,13 @@
+import json
+import time
+
 import requests
 import yaml
-import time
-import json
+
 import toolbox.database as db
+import toolbox.print_result as pr
 import toolbox.ranking as rank
 import toolbox.time as time
-import toolbox.print_result as pr
 
 # Getting current timestamp
 current_time = time.get_current_time()
