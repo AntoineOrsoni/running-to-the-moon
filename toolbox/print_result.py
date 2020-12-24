@@ -38,3 +38,13 @@ def all_results(ranking: dict):
             print(f'{index}: {value}')
         print('')
         print('')
+
+def runner_results(ranking: dict, surname: str):
+    for team, participants in ranking.items():
+
+        for index, value in enumerate(participants):
+            if surname in value.values():
+                print(f'-- {team} --')
+                print(f'{index}: {value}')
+                print('')
+                print('')

@@ -1,6 +1,7 @@
 import re
 import toolbox.database as db
 import toolbox.print_result as pr
+import copy
 
 # Return capitalized name. Works for single names, names with a space, names with a `-`
 def capitalize_name(name: str) -> str:
@@ -60,9 +61,12 @@ def cure_teams(output: list) -> list:
         # str to int
         line['total_activites_solo'] = int(line['total_activites_solo'])
 
+        # Remove old team code
         team_name = line['code']
         line.pop('code')
         result[team_name].append(line)
+
+
     
     return result
 
@@ -75,11 +79,11 @@ def get_week_result(ranking_current_total: dict, old_week_number: int) -> dict:
     # Get the previous week from DB
     # modulo 54 allows to compare week 1 and week 52 as the previous week
     ranking_old_total, timestamp_old = db.get_output_type('total', old_week_number % 54)
+    pr.all_results(ranking_old_total)
 
-    # Init the ranking_current_week with the same key, structure
-    ranking_current_week = ranking_current_total
+    ranking_current_week = copy.deepcopy(ranking_current_total)
 
-    for team, courreurs in ranking_current_total.items():
+    for team, courreurs in ranking_current_week.items():
     
         for index, courreur_results in enumerate(courreurs):
 
@@ -88,14 +92,19 @@ def get_week_result(ranking_current_total: dict, old_week_number: int) -> dict:
             # Else it's a string (name, surname), add it as is.
             try:
                 ranking_current_week[team][index] = {key:   (courreur_results[key] - ranking_old_total[team][index].get(key, 0) 
-                                                            if isinstance(courreur_results[key], int)
+                                                                if isinstance(courreur_results[key], int)
                                                             else round(courreur_results[key] - ranking_old_total[team][index].get(key, 0), 2) 
                                                                 if isinstance(courreur_results[key], float)
                                                             else courreur_results[key])
                                                             for key in courreur_results}
+
             # The key doesn't exist in the previous week. No need to substract, we can leave it as is.
             except KeyError:
                 pass
+            except IndexError:
+                pass
+    
+
 
     return (ranking_current_week, timestamp_old)
 
