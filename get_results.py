@@ -31,6 +31,9 @@ ranking_current_week, old_time = rank.get_week_result(ranking_current_total, cur
 
 db.add_output(json.dumps(ranking_current_week), 'week_result', current_week, current_time)
 
+# Print team names
+pr.all_teams_names(ranking_current_week)
+
 # Print the results
 rank.get_best_average_distance_team(ranking_current_week, current_time, old_time)
 rank.get_total_distance_team(ranking_current_week, current_time, old_time)

@@ -48,3 +48,11 @@ def runner_results(ranking: dict, surname: str):
                 print(f'{index}: {value}')
                 print('')
                 print('')
+
+def all_teams_names(ranking: dict):
+    print('Equipes participantes :')
+
+    for key in ranking.keys():
+        print(f'- {key}')
+    print('')
+    print('')

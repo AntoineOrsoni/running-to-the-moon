@@ -25,48 +25,55 @@ def capitalize_name(name: str) -> str:
 def cure_teams(output: list) -> list:
 
     result = dict()
+    remove_doubles = ['MICROSOFTTL0002']
 
     for line in output:
-        
-        if bool(re.match('EKIPTL', line['code'])):
-            line['code'] = 'Oracoeur'
-        elif bool(re.match('TRANSFORMTL', line['code'])):
-            line['code'] = 'Greffés et Amis des Greffés'
-        elif bool(re.match('TL_HML', line['code'])):
-            line['code'] = 'Hôpital Marie Lannelongue'
-        elif bool(re.match('TL_SFT', line['code'])):
-            line['code'] = 'Médecins Transplanteurs'
-        elif bool(re.match('MICROSOFTTTL', line['code'])):
-            line['code'] = 'Microsoft'
-        elif bool(re.match('TL_SCALITY', line['code'])):
-            line['code'] = 'Scality'
-        elif bool(re.match('SNCFTL', line['code'])):
-            line['code'] = 'SNCF'
-        elif bool(re.match('CHURouenTL', line['code'])):
-            line['code'] = 'CHU Rouen'
-        elif bool(re.match('TL_HP', line['code'])):
-            line['code'] = 'HP'       
-        elif bool(re.match('TL_EEX', line['code'])):
-            line['code'] = 'EEX'           
+
+        if line['code'] in remove_doubles:
+            pass
         else:
-            line['code'] = 'CAGIP'
+            if bool(re.match('EKIPTL', line['code'])):
+                line['code'] = 'Oracoeur'
+            elif bool(re.match('TRANSFORMETL', line['code'])):
+                line['code'] = 'Greffés et Amis des Greffés'
+            elif bool(re.match('TL_HML', line['code'])):
+                line['code'] = 'Hôpital Marie Lannelongue'
+            elif bool(re.match('TL_SFT', line['code'])):
+                line['code'] = 'Médecins Transplanteurs'
+            elif bool(re.match('MICROSOFTTL', line['code'])):
+                line['code'] = 'Microsoft'
+            elif bool(re.match('TL_SCALITY', line['code'])):
+                line['code'] = 'Scality'
+            elif bool(re.match('SNCFTL', line['code'])):
+                line['code'] = 'SNCF'
+            elif bool(re.match('CHURouenTL', line['code'])):
+                line['code'] = 'CHU Rouen'
+            elif bool(re.match('TL_HP', line['code'])):
+                line['code'] = 'HP'       
+            elif bool(re.match('TL_EEX', line['code'])):
+                line['code'] = 'EEX'           
+            else:
+                line['code'] = 'CAGIP'        
 
-        if line['code'] not in result.keys():
-            result[line['code']] = list()
+            # If the team doesn't not already exist in the currated_list
+            # First runner. Create the team
+            if line['code'] not in result.keys():
+                result[line['code']] = list()
 
-        # Capitalize name and surname
-        line['prenom'] = capitalize_name(line['prenom'])
-        line['nom_de_famille'] = capitalize_name(line['nom_de_famille'])
+            # Capitalize name and surname
+            line['prenom'] = capitalize_name(line['prenom'])
+            line['nom_de_famille'] = capitalize_name(line['nom_de_famille'])
 
-        # str to int
-        line['total_activites_solo'] = int(line['total_activites_solo'])
+            # str to int
+            line['total_activites_solo'] = int(line['total_activites_solo'])
 
-        # Remove old team code
-        team_name = line['code']
-        line.pop('code')
-        result[team_name].append(line)
+            # 2 decimals
+            line['total_distance_solo'] = round(line['total_distance_solo'], 2)
 
-
+            # Remove old team code
+            team_name = line['code']
+            line.pop('code')
+            result[team_name].append(line)
     
     return result
 
@@ -187,7 +194,7 @@ def get_best_runner_team(ranking_current_week: dict, current_time: str, old_time
 
     for team, participants in ranking_current_week.items():
 
-        best_distance = 0
+        best_distance = 0.0
 
         for participant in participants:
             if participant['total_distance_solo'] > best_distance:
