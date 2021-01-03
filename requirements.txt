@@ -9,8 +9,6 @@ idna==2.10
 itsdangerous==1.1.0
 jedi==0.17.2
 Jinja2==2.11.2
-jupyter-client==6.1.7
-jupyter-core==4.7.0
 MarkupSafe==1.1.1
 parso==0.7.1
 pexpect==4.8.0
