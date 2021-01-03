@@ -6,9 +6,6 @@ click==7.1.2
 decorator==4.4.2
 Flask==1.1.2
 idna==2.10
-ipykernel==5.4.2
-ipython==7.19.0
-ipython-genutils==0.2.0
 itsdangerous==1.1.0
 jedi==0.17.2
 Jinja2==2.11.2
